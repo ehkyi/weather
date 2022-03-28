@@ -11,7 +11,7 @@ initial, temp = [], []
 speed, direction, frequency = [], [], []
 
 for i in range(1, 12):
-    with open(f'{i}.csv') as f:
+    with open(f'data/Eminence{i}.csv') as f:
         reader = csv.DictReader(f)
 
         for j in reader:
@@ -36,7 +36,7 @@ for i in sorted(direction):
     for j in initial:
         if j['direction'] == i:
             temp.append(j)
-# print(temp)
+
 
 
 # Turn all the directions from degrees to cardinal
@@ -44,7 +44,7 @@ for h, i in zip(sorted(direction), temp):
     for j, k, l in zip(direction_starts, direction_ends, compass_rose):
         if j <= h < k:
             i['direction'] = l
-# print(temp)
+
 
 # Sorting the speed from least to greatest based on each direction
 speed_sorting = []
@@ -57,7 +57,7 @@ for i in compass_rose:
         if k['direction'] == i:
             k['speed'] = speed_sorting.pop(0)
     speed_sorting = []
-# print(temp)
+
 
 # Converting speed to strength and sorting the frequency based on the frequency of strength
 for i in temp:
@@ -70,10 +70,18 @@ for i in temp:
     elif 13 <= i['speed'] < 19:
         i['speed'] = 4
         i['frequency'] = 0.47
-# print(temp)
+
 
 df = pd.DataFrame(data={'windspeed': [i['speed'] for i in temp], 'winddir': [i['direction'] for i in temp], 'frequency': [i['frequency'] for i in temp]})
 fig = px.bar_polar(df, r="frequency", theta="winddir",
-                   color="windspeed", template="plotly_dark",
+                   color="windspeed", template="plotly_white",
                    color_discrete_sequence=px.colors.sequential.Plasma_r)
+
+fig.update_layout(
+    title='Wind Speed Distribution in Eminence, Indiana',
+    font_size=16,
+    legend_font_size=16,
+    polar_angularaxis_rotation=90,
+
+)
 fig.show()
